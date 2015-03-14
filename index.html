@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #canvas{
+            border: 1px solid #ccc;
+            background: #E9C341;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+<script>
+    var PI = Math.PI;
+    var PI2 = PI * 2;
+    var WIDTH = 800,HEIGHT = 600;
+    var RADIUS = 200;
+    var HourAngle = 0, MunitesAngle = 0, SencondAngle = 0;
+
+    function animate(){
+        requestAnimationFrame(animate);
+
+        update();
+        render();
+    }
+    var ctx = getContext("canvas");
+
+    animate();
+
+    function update(){
+        var now = new Date();
+        var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds() + now.getMilliseconds() / 1000;
+        SencondAngle = s * 6;
+        MunitesAngle = (m + s / 60) * 6;
+        HourAngle = (h + (m + s / 60) / 60) * 30;
+    }
+
+    function getContext(id){
+        var canvas = document.getElementById(id);
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+
+        return canvas.getContext("2d");
+    }
+
+    function render(){
+        ctx.clearRect(0,0,WIDTH, HEIGHT);
+        drawCircle(RADIUS);
+        drawMinLine();
+        drawNumbers();
+        drawLine(HourAngle, 90, "#333333", 6, 0);
+        drawLine(MunitesAngle, 130, "#333333", 4, 0);
+        drawLine(SencondAngle, 160, "#ff0000", 2);
+        drawCircle(4, "#ffffff");
+        drawLogo();
+    }
+
+    function drawCircle(r, fillcolor){
+        var grd=ctx.createRadialGradient(WIDTH/2,HEIGHT/2,5,WIDTH/2,HEIGHT/2,r);
+        grd.addColorStop(0,"white");
+        grd.addColorStop(0.6,"#E9C341");
+        grd.addColorStop(1,"whitesmoke");
+        fillcolor = fillcolor || grd;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.fillStyle = fillcolor;
+        ctx.arc(WIDTH/2, HEIGHT/2, r, 0, PI2);
+        ctx.stroke();
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawLine(angle, length, color, width, tailw){
+        width = width || 2;
+        tailw = tailw == undefined ? 15 : tailw;
+        ctx.save();
+        ctx.translate(WIDTH/2, HEIGHT/2);
+        ctx.rotate(angle * PI / 180);
+        ctx.beginPath();
+        ctx.lineWidth = width;
+        ctx.strokeStyle = color;
+        ctx.moveTo(0, tailw);
+        ctx.lineTo(0, -length);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function drawMinLine(){
+        for(var i = 0; i < 300; i++){
+            var w = 7;
+            if(i%5 == 0){
+                w = 9;
+            }
+            if(i%25 == 0){
+                w = 12;
+            }
+
+            ctx.save();
+            ctx.translate(WIDTH/2, HEIGHT/2);
+            ctx.rotate(360/300 * i * PI / 180);
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "#C7A28D";
+            ctx.moveTo(0, -RADIUS);
+            ctx.lineTo(0, -RADIUS + w);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+        }
+    }
+
+    function drawNumbers(){
+        ctx.font = "normal 12px Consolas";
+        ctx.fillStyle = "#555";
+        var R = RADIUS - 20;
+
+        for(var i = 1; i <= 12; i++){
+            var metrics = ctx.measureText(i);
+            var textWidth = metrics.width;
+            var textHeight = 6;
+            var angle = 30 * i * PI / 180;
+            var offsetx = R * Math.sin(angle);
+            var offsety = R * Math.cos(angle);
+
+            ctx.save();
+            //ctx.translate(WIDTH/2, HEIGHT/2);
+            //ctx.rotate(30 * i * PI / 180);
+            ctx.fillText(i, WIDTH/2 - textWidth/2 + offsetx, HEIGHT/2 - offsety+6);
+            ctx.restore();
+        }
+    }
+
+    function drawLogo(){
+        ctx.font = "italic 16px Consolas";
+        ctx.fillStyle = "#000000";
+
+        var metrics = ctx.measureText("CQB Watch");
+        var textWidth = metrics.width;
+
+        ctx.fillText("CQB Watch", WIDTH/2 - textWidth/2, HEIGHT/2 + 40);
+    }
+
+</script>
+</body>
+</html>
