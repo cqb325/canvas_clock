@@ -115,34 +115,27 @@
     }
 
     function drawNumbers(){
-        ctx.font = "normal 12px Consolas";
+        ctx.font = "12px Consolas";
         ctx.fillStyle = "#555";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
         var R = RADIUS - 20;
 
         for(var i = 1; i <= 12; i++){
-            var metrics = ctx.measureText(i);
-            var textWidth = metrics.width;
-            var textHeight = 6;
             var angle = 30 * i * PI / 180;
             var offsetx = R * Math.sin(angle);
             var offsety = R * Math.cos(angle);
 
-            ctx.save();
-            //ctx.translate(WIDTH/2, HEIGHT/2);
-            //ctx.rotate(30 * i * PI / 180);
-            ctx.fillText(i, WIDTH/2 - textWidth/2 + offsetx, HEIGHT/2 - offsety+6);
-            ctx.restore();
+            ctx.fillText(i, WIDTH/2 + offsetx, HEIGHT/2 - offsety);
         }
     }
 
     function drawLogo(){
         ctx.font = "italic 16px Consolas";
         ctx.fillStyle = "#000000";
+        ctx.textAlign = "center";
 
-        var metrics = ctx.measureText("CQB Watch");
-        var textWidth = metrics.width;
-
-        ctx.fillText("CQB Watch", WIDTH/2 - textWidth/2, HEIGHT/2 + 40);
+        ctx.fillText("CQB Watch", WIDTH/2, HEIGHT/2 + 40);
     }
 
 </script>
